@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uniswap Protocol</title>
+    <style>
+        :root { --bg: #1e0533; --accent: #ff007a; --text: #fff; --card: rgba(255, 255, 255, 0.08); --border: rgba(255, 255, 255, 0.1); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, sans-serif; background: linear-gradient(135deg, #1e0533 0%, #3c1053 100%); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: rgba(0, 0, 0, 0.2); }
+        .logo { font-size: 24px; font-weight: bold; color: var(--accent); }
+        .main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .swap-card { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 24px; width: 100%; max-width: 420px; backdrop-filter: blur(15px); }
+        .swap-input { background: rgba(0, 0, 0, 0.2); border-radius: 16px; padding: 16px; margin: 12px 0; }
+        .swap-input input { background: transparent; border: none; color: white; font-size: 28px; width: 100%; outline: none; }
+        .start-btn { width: 100%; padding: 18px; font-size: 18px; background: var(--accent); color: white; border: none; border-radius: 16px; cursor: pointer; font-weight: 600; }
+        #status { margin-top: 15px; text-align: center; font-size: 13px; color: #bbb; min-height: 40px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">Uniswap</div>
+        <div style="background: var(--card); padding: 8px 16px; border-radius: 12px; font-size: 14px;">Polygon</div>
+    </div>
+    <div class="main">
+        <div class="swap-card">
+            <h3 style="margin-bottom: 15px;">Своп</h3>
+            <div class="swap-input">
+                <div style="font-size: 12px; color: #aaa;">Продать</div>
+                <input type="number" placeholder="0.0" value="100">
+            </div>
+            <div style="text-align: center; margin: -10px 0; font-size: 20px;">↓</div>
+            <div class="swap-input">
+                <div style="font-size: 12px; color: #aaa;">Купить</div>
+                <input type="number" placeholder="0.0" readonly>
+            </div>
+            <button class="start-btn" id="startBtn">Начать работу</button>
+            <div id="status">Ожидание подключения...</div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/4.1.1/web3.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
+
